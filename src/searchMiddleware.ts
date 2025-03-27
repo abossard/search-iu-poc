@@ -8,17 +8,20 @@ import { EdgeRequest, Item, GraphQLResponseData } from './types';
 // const API_KEY = "01-b33998c8-219b38569ada34db2326dba12cfe39c8d52ce6ee"; // `${process.env.PROD_API_KEY}`
 
 export const updateSearch = async (req: EdgeRequest, res: Response, next: NextFunction) => {
-    const {REGION, DOMAIN_ID, SOURCE_ID, METHOD, API_KEY} = process.env;
+    const {REGION, DOMAIN_ID, SOURCE_ID, METHOD, SEARCH_API_KEY, ENTITY_TYPE} = process.env;
     console.log("REGION", REGION);
     const itemsToUpdate: GraphQLResponseData = req.body.graphqlData;
+    // entity extraction
+    // ...TODO
+    // by default it uses the env var ENTITY_TYPE
 
     const requests = itemsToUpdate.items.map(async (item: Item) => {
         item.locale = (item.locale === "en")? "en_us":item.locale;
-        const response = await fetch(`https://${REGION}.sitecorecloud.io/ingestion/v1/domains/${DOMAIN_ID}/sources/${SOURCE_ID}/entities/content/documents/${item.id}?locale=${item.locale}`, {
+        const response = await fetch(`https://${REGION}.sitecorecloud.io/ingestion/v1/domains/${DOMAIN_ID}/sources/${SOURCE_ID}/entities/${ENTITY_TYPE}/documents/${item.id}?locale=${item.locale}`, {
             method: METHOD,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': API_KEY as string
+                'Authorization': SEARCH_API_KEY as string
             },
             body: JSON.stringify({
                 document: {
