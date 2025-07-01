@@ -51,9 +51,10 @@ export class InvocationRepository implements IInvocationRepository {
      * Get statistics for monitoring
      */
     getStats() {
-        const total = this.invocations.size;
-        
-        return { total };
+        const total_invocations = this.invocations.size;
+        const total_items = Array.from(this.invocations.values()).reduce((sum, inv) => sum + inv.updates.length, 0);
+
+        return { total_invocations, total_items };
     }
 }
 

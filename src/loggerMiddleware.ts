@@ -40,6 +40,6 @@ export const jsonOnlyMiddleware = (req: EdgeRequest, res: Response, next: NextFu
     // Store filtered updates for downstream middleware
     req.updates = layoutUpdates;
     
-    console.log(`Filtered ${layoutUpdates.length} layout updates from ${rawUpdates.length} total updates`);
+    console.log(`Found ${layoutUpdates.length} layout items from ${rawUpdates.length} total items`);
     next();
 };
