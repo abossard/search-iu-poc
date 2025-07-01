@@ -1,5 +1,6 @@
 import express, { Response, NextFunction } from 'express';
 import { loggerMiddleware, jsonOnlyMiddleware } from './loggerMiddleware';
+import { collectAndProcessMiddleware } from './collectAndProcessMiddleware';
 import { graphqlMiddleware } from './graphqlMiddleware';
 import { EdgeRequest } from './types';
 import { updateSearch } from './searchMiddleware';
@@ -24,11 +25,11 @@ app.get('/ping', (req: EdgeRequest, res: Response) => {
     res.send('Pong');
 });
 
-// Define the /published route with JSON-only and GraphQL middleware
-app.post('/published', jsonOnlyMiddleware, graphqlMiddleware, updateSearch, (req: EdgeRequest, res: Response) => {
+// Define the /published route with enhanced middleware pipeline
+app.post('/published', jsonOnlyMiddleware, collectAndProcessMiddleware, graphqlMiddleware, updateSearch, (req: EdgeRequest, res: Response) => {
     console.log('--- completed, invocation_id:', req.body.invocation_id); // Access the updates field here
     res.setHeader('content-type', 'application/json');
-    res.send(`{ invocation_id: ${req.body.invocation_id}}`);
+    res.send(`{ "invocation_id": "${req.body.invocation_id}" }`);
 });
 
 // Define the /start route to dis/enable the incremental Updates
